@@ -3,7 +3,7 @@ module Data.AddressBook where
 import Prelude
 
 import Control.Plus (empty)
-import Data.List (List(..), filter, head)
+import Data.List (List(..), filter, head, null)
 import Data.Maybe (Maybe)
 
 type Address = 
@@ -35,8 +35,6 @@ emptyBook = empty
 
 insertEntry :: Entry -> AddressBook -> AddressBook
 insertEntry = Cons
-
-
 
 -- infixr 0 apply as $
 -- $ is an alias for the regular function apply:
@@ -77,7 +75,9 @@ johnEntry = {
 }
 -- create Function to insert entry into AddressBook
 johnAddy :: AddressBook
-johnAddy = insertEntry johnEntry emptyBook
+johnAddy = insertEntry johnEntry emptyBook -- Add entry to an empty address book
+-- finally call as findEntry "John" "Smith" johnAddy
+-- returns johnAddy Entry
 
 -- lookup Entry in Address book by listing street and an address book (johnAddy)
 findEntrySt :: String -> AddressBook -> Maybe Entry
@@ -85,3 +85,9 @@ findEntrySt street = filter filterForSt >>> head
     where
         filterForSt :: Entry -> Boolean
         filterForSt entry = entry.address.street == street
+
+entryExists :: String -> String -> AddressBook -> Boolean
+entryExists firstName lastName = filter filterForName >>> not null
+    where
+        filterForName :: Entry -> Boolean
+        filterForName entry = entry.firstName == firstName && entry.lastName == lastName
