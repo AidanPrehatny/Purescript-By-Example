@@ -3,7 +3,7 @@ module Data.AddressBook where
 import Prelude
 
 import Control.Plus (empty)
-import Data.List (List(..), filter, head, null)
+import Data.List (List(..), filter, head, null, nubBy)
 import Data.Maybe (Maybe)
 
 type Address = 
@@ -73,6 +73,7 @@ johnEntry = {
     lastName: "Smith",
     address: johnAddr
 }
+
 -- create Function to insert entry into AddressBook
 johnAddy :: AddressBook
 johnAddy = insertEntry johnEntry emptyBook -- Add entry to an empty address book
@@ -91,3 +92,26 @@ entryExists firstName lastName = filter filterForName >>> not null
     where
         filterForName :: Entry -> Boolean
         filterForName entry = entry.firstName == firstName && entry.lastName == lastName
+
+johnEntryDuplicate :: Entry
+johnEntryDuplicate = {
+    firstName: "John",
+    lastName: "Smith",
+    address: johnAddr
+}
+
+isEqual :: Entry -> Entry -> Boolean
+isEqual s1 s2 = s1 == s2 
+
+removeDuplicates :: String -> String -> AddressBook -> AddressBook
+removeDuplicates firstName lastName = nubBy hasSameName
+ where
+    hasSameName :: Entry -> Entry -> Boolean
+    hasSameName entry1 entry2 =
+      entry1.firstName == firstName &&
+      entry1.lastName == lastName &&
+      entry1.firstName == entry2.firstName &&
+      entry1.lastName == entry2.lastName
+
+duplicateAddy :: AddressBook
+duplicateAddy = insertEntry johnEntry johnAddy
